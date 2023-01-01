@@ -1,16 +1,20 @@
 package com.contactmanager.controllers;
 
+import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import com.contactmanager.entities.User;
+import com.contactmanager.helpers.Messege;
+import com.contactmanager.repositories.UserRepository;
 
 @Controller
 public class WebController {
+	@Autowired
+	UserRepository userRepository;
 
 	@GetMapping(path = "/")
 	public String home(Model m) {
@@ -39,21 +43,38 @@ public class WebController {
 	}
 
 	@PostMapping(path = "/process")
-	public String processForm(Model m, @ModelAttribute("user") User u,
-			@RequestParam(value = "retypePassword") String retypePassword,
-			@RequestParam(value = "userAggrement", defaultValue = "false") boolean aggrement) {
+	public String processForm(@Valid @ModelAttribute("user") User user, BindingResult bindingResult, Model m,
+			@RequestParam(value = "agreement", defaultValue = "false") Boolean agreement,
+			@RequestParam(value = "confirmPassword") String confirmPassword, HttpSession session) {
 
-		System.out.println(u);
-		System.out.println(aggrement);
-		if (!aggrement) {
-			m.addAttribute("agreement", "Please accept terms & conditions");
-			m.addAttribute("user", u);
+		try {
+
+			if (bindingResult.hasErrors()) {
+
+				m.addAttribute("user", user);
+				System.out.println(bindingResult);
+				return "register";
+
+			}
+
+			if (!confirmPassword.equals(user.getPassword())) {
+				m.addAttribute("user", user);
+				m.addAttribute("condition",true);
+				return "register";
+			}
+			user.setRole("ROLE_USER");
+			user.setEnabled(true);
+			User save = userRepository.save(user);
+			System.out.println(save);
+			m.addAttribute("user", new User());
+			session.setAttribute("messege", new Messege("Successfully Registered !!!", "alert-success"));
+			return "register";
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			m.addAttribute(user);
+			session.setAttribute("messege", new Messege("Something Went Wrong !!! " + e.getMessage(), "alert-danger"));
 			return "register";
 		}
-		if (!retypePassword.equals(u.getPassword())) {
-			m.addAttribute("user", u);
-			return "register";
-		}
-		return "home";
 	}
 }

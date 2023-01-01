@@ -31,6 +31,5 @@ public class Contact {
 	private String city;
 	@ManyToOne()
 	private User user;
-	
 
 }
