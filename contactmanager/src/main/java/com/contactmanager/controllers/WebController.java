@@ -3,6 +3,8 @@ package com.contactmanager.controllers;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,6 +15,8 @@ import com.contactmanager.repositories.UserRepository;
 
 @Controller
 public class WebController {
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
 	@Autowired
 	UserRepository userRepository;
 
@@ -64,7 +68,10 @@ public class WebController {
 			}
 			user.setRole("ROLE_USER");
 			user.setEnabled(true);
+			user.setImageURL("default.png");
+			user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 			User save = userRepository.save(user);
+			
 			System.out.println(save);
 			m.addAttribute("user", new User());
 			session.setAttribute("messege", new Messege("Successfully Registered !!!", "alert-success"));

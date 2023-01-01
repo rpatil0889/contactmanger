@@ -20,17 +20,18 @@ public class User {
 	@Size(min = 2, message = "Name contain atleast 2 charachter")
 	private String name;
 	@NotBlank(message = "Email is required !!!")
-	@Email(regexp = "^[a-zA-Z]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$",message = "Invalid email")
+	@Email(regexp = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$",message = "Invalid email")
 	private String email;
 	@NotBlank(message = "Mobile number is required")
 	@Pattern(regexp = "^[\\d]{10}$", message = "Only 10 digit Numbers are allowed ")
 	private String mobile;
-	@Size(min = 6,max = 20, message = "Password lenth Should be 6 to 12 ")
+	
+	@Column(length = 1000)
+	@Size(min = 6, message = "Password lenth Should be 6 to 12 ")
 	@Pattern(regexp = "^.*(?=..*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$",message = "Password should contain a-z,A-Z,0-9,Special Character")
 	private String password;
-	@Transient
-	private String repassword;
 	private String role;
+	private String imageURL;
 	private boolean enabled;
 	private String about;
 	@Transient
