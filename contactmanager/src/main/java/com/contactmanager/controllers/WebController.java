@@ -47,16 +47,20 @@ public class WebController {
 	}
 
 	@PostMapping(path = "/process")
-	public String processForm(@Valid @ModelAttribute("user") User user, BindingResult bindingResult, Model m,
+	public String processForm(
+			@Valid 
+			@ModelAttribute("user") User user, 
+			BindingResult bindingResult, 
+			Model m,
 			@RequestParam(value = "agreement", defaultValue = "false") Boolean agreement,
-			@RequestParam(value = "confirmPassword") String confirmPassword, HttpSession session) {
+			@RequestParam(value = "confirmPassword") String confirmPassword,
+			HttpSession session) {
 
 		try {
 
 			if (bindingResult.hasErrors()) {
 
 				m.addAttribute("user", user);
-				System.out.println(bindingResult);
 				return "register";
 
 			}

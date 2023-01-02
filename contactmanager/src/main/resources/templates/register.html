@@ -84,7 +84,7 @@
 							<input
 								type="password" 
 								class="form-control" 
-								th:classappend="${#fields.hasErrors('mobile') ? 'is-invalid':''}"
+								th:classappend="${#fields.hasErrors('password') ? 'is-invalid':''}"
 								id="exampleInputPassword1"
 								name="password" 
 								placeholder="Enter password" 
@@ -131,7 +131,11 @@
         						</div>
 
 						</div>
-						<br />
+						<div class ="text-right">
+						
+						<a href="/login">Already have an account ? Login </a>
+						</div>
+						<br>
 
 						<div class="text-center">
 							<button type="submit" class="btn btn-primary">Submit</button>
