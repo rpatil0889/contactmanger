@@ -2,13 +2,17 @@ package com.contactmanager.controllers;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import com.contactmanager.entities.User;
 import com.contactmanager.helpers.Messege;
 import com.contactmanager.repositories.UserRepository;
@@ -19,6 +23,12 @@ public class WebController {
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 	@Autowired
 	UserRepository userRepository;
+
+	@GetMapping(path = "/test")
+	public String test(Model m) {
+		m.addAttribute("title", "Dashboard-SmarterContact");
+		return "test";
+	}
 
 	@GetMapping(path = "/")
 	public String home(Model m) {
@@ -47,14 +57,9 @@ public class WebController {
 	}
 
 	@PostMapping(path = "/process")
-	public String processForm(
-			@Valid 
-			@ModelAttribute("user") User user, 
-			BindingResult bindingResult, 
-			Model m,
+	public String processForm(@Valid @ModelAttribute("user") User user, BindingResult bindingResult, Model m,
 			@RequestParam(value = "agreement", defaultValue = "false") Boolean agreement,
-			@RequestParam(value = "confirmPassword") String confirmPassword,
-			HttpSession session) {
+			@RequestParam(value = "confirmPassword") String confirmPassword, HttpSession session) {
 
 		try {
 
@@ -67,7 +72,7 @@ public class WebController {
 
 			if (!confirmPassword.equals(user.getPassword())) {
 				m.addAttribute("user", user);
-				m.addAttribute("condition",true);
+				m.addAttribute("condition", true);
 				return "register";
 			}
 			user.setRole("ROLE_USER");
@@ -75,7 +80,7 @@ public class WebController {
 			user.setImageURL("default.png");
 			user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 			User save = userRepository.save(user);
-			
+
 			System.out.println(save);
 			m.addAttribute("user", new User());
 			session.setAttribute("messege", new Messege("Successfully Registered !!!", "alert-success"));

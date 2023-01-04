@@ -19,6 +19,7 @@ public class User {
 	@NotBlank(message = "Name is required !!!")
 	@Size(min = 2, message = "Name contain atleast 2 charachter")
 	private String name;
+	@Column(unique = true)
 	@NotBlank(message = "Email is required !!!")
 	@Email(regexp = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$",message = "Invalid email")
 	private String email;

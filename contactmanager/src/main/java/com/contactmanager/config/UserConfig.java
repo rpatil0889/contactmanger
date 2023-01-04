@@ -45,6 +45,7 @@ public class UserConfig {
 		.antMatchers("/user/**").hasRole("USER")
 		.antMatchers("/**").permitAll()
 		.and().formLogin().loginPage("/login")
+		.defaultSuccessUrl("/user/dashboard")
 		.and().csrf().disable();
 		http.authenticationProvider(this.authenticationProvider());
 
